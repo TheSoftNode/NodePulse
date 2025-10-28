@@ -10,16 +10,11 @@ import Node from '@/lib/db/models/Node';
 import HealthCheck from '@/lib/db/models/HealthCheck';
 import { AlertService } from './AlertService';
 
-/**
- * Health Check Worker
- * Responsible for executing health checks on nodes
- */
 export class HealthCheckWorker {
   private adapters: Map<NetworkType, BaseAdapter>;
   private alertService: AlertService;
 
   constructor() {
-    // Initialize network adapters
     this.adapters = new Map([
       ['helium', new HeliumAdapter()],
       ['render', new RenderAdapter()],
@@ -30,50 +25,54 @@ export class HealthCheckWorker {
     this.alertService = new AlertService();
   }
 
-  /**
-   * Execute scheduled health checks for all active nodes
-   */
   async executeScheduledChecks(): Promise<HealthCheckResult[]> {
     try {
-      const nodes = await Node.find({});
+      const nodes = await Node.find({}).lean();
       const results: HealthCheckResult[] = [];
 
-      console.log(`= Starting health checks for ${nodes.length} nodes...`);
+      console.log(`Starting health checks for ${nodes.length} nodes...`);
 
       for (const node of nodes) {
-        if (this.shouldCheckNode(node)) {
-          const result = await this.checkSingleNode(node);
+        const serializedNode: INode = {
+          _id: node._id.toString(),
+          name: node.name,
+          network: node.network,
+          endpoint: node.endpoint,
+          checkInterval: node.checkInterval,
+          config: node.config,
+          status: node.status,
+          lastChecked: node.lastChecked ? new Date(node.lastChecked) : null,
+          createdAt: new Date(node.createdAt),
+          updatedAt: new Date(node.updatedAt),
+        };
+
+        if (this.shouldCheckNode(serializedNode)) {
+          const result = await this.checkSingleNode(serializedNode);
           results.push(result);
-          await this.processCheckResult(node, result);
+          await this.processCheckResult(serializedNode, result);
         }
       }
 
-      console.log(` Completed ${results.length} health checks`);
+      console.log(`Completed ${results.length} health checks`);
       return results;
     } catch (error) {
-      console.error('L Error executing scheduled checks:', error);
+      console.error('Error executing scheduled checks:', error);
       throw error;
     }
   }
 
-  /**
-   * Check if a node should be checked based on its check interval
-   */
-  private shouldCheckNode(node: any): boolean {
+  private shouldCheckNode(node: INode): boolean {
     if (!node.lastChecked) {
-      return true; // Never checked before
+      return true;
     }
 
     const now = new Date();
     const lastCheck = new Date(node.lastChecked);
-    const timeSinceLastCheck = (now.getTime() - lastCheck.getTime()) / 1000; // in seconds
+    const timeSinceLastCheck = (now.getTime() - lastCheck.getTime()) / 1000;
 
     return timeSinceLastCheck >= node.checkInterval;
   }
 
-  /**
-   * Perform health check on a single node
-   */
   async checkSingleNode(node: INode): Promise<HealthCheckResult> {
     const adapter = this.adapters.get(node.network);
     if (!adapter) {
@@ -83,7 +82,7 @@ export class HealthCheckWorker {
     const startTime = Date.now();
 
     try {
-      console.log(`= Checking node: ${node.name} (${node.network})`);
+      console.log(`Checking node: ${node.name} (${node.network})`);
 
       const healthData = await adapter.checkHealth(node);
       const responseTime = Date.now() - startTime;
@@ -98,7 +97,7 @@ export class HealthCheckWorker {
       };
     } catch (error) {
       const responseTime = Date.now() - startTime;
-      console.error(`L Health check failed for ${node.name}:`, error);
+      console.error(`Health check failed for ${node.name}:`, error);
 
       return {
         nodeId: node._id.toString(),
@@ -116,12 +115,8 @@ export class HealthCheckWorker {
     }
   }
 
-  /**
-   * Process the result of a health check
-   */
-  private async processCheckResult(node: any, result: HealthCheckResult): Promise<void> {
+  private async processCheckResult(node: INode, result: HealthCheckResult): Promise<void> {
     try {
-      // Save health check to database
       await HealthCheck.create({
         nodeId: result.nodeId,
         status: result.status,
@@ -131,42 +126,49 @@ export class HealthCheckWorker {
         error: result.error,
       });
 
-      // Determine new node status
       const newStatus = determineNodeStatus(result.metrics, result.responseTime);
       const oldStatus = node.status;
 
-      // Update node status and last checked time
       await Node.findByIdAndUpdate(result.nodeId, {
         status: newStatus,
         lastChecked: result.checkedAt,
       });
 
-      // Process alerts if status changed
       if (oldStatus !== newStatus) {
-        console.log(`=Ê Node ${node.name} status changed: ${oldStatus} ’ ${newStatus}`);
+        console.log(`Node ${node.name} status changed: ${oldStatus} -> ${newStatus}`);
         await this.alertService.processNodeStatusChange(result.nodeId, oldStatus, newStatus, result.metrics);
       }
     } catch (error) {
-      console.error('L Error processing check result:', error);
+      console.error('Error processing check result:', error);
     }
   }
 
-  /**
-   * Trigger a manual health check for a specific node
-   */
   async triggerManualCheck(nodeId: string): Promise<HealthCheckResult> {
     try {
-      const node = await Node.findById(nodeId);
-      if (!node) {
+      const nodeDoc = await Node.findById(nodeId).lean();
+      if (!nodeDoc) {
         throw new Error('Node not found');
       }
 
-      const result = await this.checkSingleNode(node as any);
+      const node: INode = {
+        _id: nodeDoc._id.toString(),
+        name: nodeDoc.name,
+        network: nodeDoc.network,
+        endpoint: nodeDoc.endpoint,
+        checkInterval: nodeDoc.checkInterval,
+        config: nodeDoc.config,
+        status: nodeDoc.status,
+        lastChecked: nodeDoc.lastChecked ? new Date(nodeDoc.lastChecked) : null,
+        createdAt: new Date(nodeDoc.createdAt),
+        updatedAt: new Date(nodeDoc.updatedAt),
+      };
+
+      const result = await this.checkSingleNode(node);
       await this.processCheckResult(node, result);
 
       return result;
     } catch (error) {
-      console.error('L Error triggering manual check:', error);
+      console.error('Error triggering manual check:', error);
       throw error;
     }
   }

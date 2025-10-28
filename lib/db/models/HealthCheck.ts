@@ -1,7 +1,9 @@
-import mongoose, { Schema, Model } from 'mongoose';
+import mongoose, { Schema, Model, Types } from 'mongoose';
 import { IHealthCheck, HealthCheckStatus } from '@/lib/types/health-check';
 
-export interface IHealthCheckDocument extends Omit<IHealthCheck, '_id'>, mongoose.Document {}
+export interface IHealthCheckDocument extends Omit<IHealthCheck, '_id' | 'nodeId'>, mongoose.Document {
+  nodeId: Types.ObjectId;
+}
 
 const HealthCheckSchema = new Schema<IHealthCheckDocument>(
   {

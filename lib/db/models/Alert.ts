@@ -1,7 +1,9 @@
-import mongoose, { Schema, Model } from 'mongoose';
+import mongoose, { Schema, Model, Types } from 'mongoose';
 import { IAlert, AlertType, AlertSeverity } from '@/lib/types/alert';
 
-export interface IAlertDocument extends Omit<IAlert, '_id'>, mongoose.Document {}
+export interface IAlertDocument extends Omit<IAlert, '_id' | 'nodeId'>, mongoose.Document {
+  nodeId: Types.ObjectId;
+}
 
 const AlertSchema = new Schema<IAlertDocument>(
   {

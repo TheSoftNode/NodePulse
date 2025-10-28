@@ -5,14 +5,7 @@ import Alert from '@/lib/db/models/Alert';
 import AlertRule from '@/lib/db/models/AlertRule';
 import Node from '@/lib/db/models/Node';
 
-/**
- * Alert Service
- * Handles alert creation, evaluation, and notification
- */
 export class AlertService {
-  /**
-   * Process node status change and create alerts if needed
-   */
   async processNodeStatusChange(
     nodeId: string,
     oldStatus: NodeStatus,
@@ -20,7 +13,6 @@ export class AlertService {
     metrics: HealthMetrics
   ): Promise<void> {
     try {
-      // Fetch alert rules for this node
       const rules = await AlertRule.find({
         nodeId,
         enabled: true,
@@ -33,7 +25,6 @@ export class AlertService {
       const node = await Node.findById(nodeId);
       if (!node) return;
 
-      // Evaluate each rule
       for (const rule of rules) {
         const shouldAlert = this.evaluateRule(rule, oldStatus, newStatus, metrics);
 
@@ -43,13 +34,10 @@ export class AlertService {
         }
       }
     } catch (error) {
-      console.error('L Error processing node status change:', error);
+      console.error('Error processing node status change:', error);
     }
   }
 
-  /**
-   * Evaluate if an alert rule should trigger
-   */
   private evaluateRule(
     rule: any,
     oldStatus: NodeStatus,
@@ -80,9 +68,6 @@ export class AlertService {
     }
   }
 
-  /**
-   * Get metric value by name
-   */
   private getMetricValue(metrics: HealthMetrics, metricName: string): number | undefined {
     switch (metricName) {
       case 'cpu':
@@ -96,9 +81,6 @@ export class AlertService {
     }
   }
 
-  /**
-   * Create an alert in the database
-   */
   private async createAlert(
     nodeId: string,
     type: AlertType,
@@ -120,15 +102,12 @@ export class AlertService {
         },
       });
 
-      console.log(`=® Alert created: ${message}`);
+      console.log('[ALERT] Alert created:', message);
     } catch (error) {
-      console.error('L Error creating alert:', error);
+      console.error('[ERROR] Error creating alert:', error);
     }
   }
 
-  /**
-   * Generate alert message based on type
-   */
   private generateAlertMessage(type: AlertType, nodeName: string, metrics: HealthMetrics): string {
     switch (type) {
       case 'node_down':
@@ -158,9 +137,6 @@ export class AlertService {
     }
   }
 
-  /**
-   * Send notifications through configured channels
-   */
   private async sendNotifications(
     channels: AlertChannel[],
     nodeName: string,
@@ -187,14 +163,11 @@ export class AlertService {
             break;
         }
       } catch (error) {
-        console.error(`L Error sending ${channel} notification:`, error);
+        console.error(`Error sending ${channel} notification:`, error);
       }
     }
   }
 
-  /**
-   * Send Discord webhook notification
-   */
   private async sendDiscordNotification(message: string, severity: AlertSeverity): Promise<void> {
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
     if (!webhookUrl) return;
@@ -207,7 +180,7 @@ export class AlertService {
       body: JSON.stringify({
         embeds: [
           {
-            title: '=® NodePulse Alert',
+            title: 'NodePulse Alert',
             description: message,
             color,
             timestamp: new Date().toISOString(),
@@ -216,18 +189,15 @@ export class AlertService {
       }),
     });
 
-    console.log('=Ï Discord notification sent');
+    console.log('Discord notification sent');
   }
 
-  /**
-   * Send Telegram notification
-   */
   private async sendTelegramNotification(message: string, severity: AlertSeverity): Promise<void> {
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
     if (!botToken || !chatId) return;
 
-    const emoji = severity === 'critical' ? '=4' : severity === 'warning' ? '=·' : '9';
+    const emoji = severity === 'critical' ? 'üî¥' : severity === 'warning' ? 'üü°' : '‚ÑπÔ∏è';
 
     await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
       method: 'POST',
@@ -239,20 +209,13 @@ export class AlertService {
       }),
     });
 
-    console.log('=Ï Telegram notification sent');
+    console.log('Telegram notification sent');
   }
 
-  /**
-   * Send email notification (placeholder)
-   */
   private async sendEmailNotification(message: string, severity: AlertSeverity): Promise<void> {
-    // TODO: Implement email notification using SMTP or email service
-    console.log('=Á Email notification (not implemented):', message);
+    console.log('Email notification (not implemented):', message);
   }
 
-  /**
-   * Send webhook notification
-   */
   private async sendWebhookNotification(
     message: string,
     severity: AlertSeverity,
@@ -272,12 +235,9 @@ export class AlertService {
       }),
     });
 
-    console.log('=Ï Webhook notification sent');
+    console.log('Webhook notification sent');
   }
 
-  /**
-   * Resolve an alert
-   */
   async resolveAlert(alertId: string): Promise<void> {
     try {
       await Alert.findByIdAndUpdate(alertId, {
@@ -285,9 +245,9 @@ export class AlertService {
         resolvedAt: new Date(),
       });
 
-      console.log(` Alert ${alertId} resolved`);
+      console.log(`Alert ${alertId} resolved`);
     } catch (error) {
-      console.error('L Error resolving alert:', error);
+      console.error('Error resolving alert:', error);
       throw error;
     }
   }
