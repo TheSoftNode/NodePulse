@@ -410,7 +410,7 @@ flowchart TD
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/nodepulse.git
+   git clone https://github.com/TheSoftNode/NodePulse.git
    cd nodepulse
    ```
 
@@ -839,7 +839,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - **Documentation**: [docs.nodepulse.io](https://docs.nodepulse.io) (coming soon)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/nodepulse/issues)
+- **Issues**: [GitHub Issues](https://github.com/TheSoftNode/NodePulse/issues)
 - **Discord**: [Join our community](https://discord.gg/nodepulse) (coming soon)
 - **Email**: support@nodepulse.io
 

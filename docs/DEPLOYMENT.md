@@ -208,6 +208,6 @@ npm run build
 
 ## Support
 
-- **Documentation**: https://github.com/yourusername/nodepulse
-- **Issues**: https://github.com/yourusername/nodepulse/issues
+- **Documentation**: https://github.com/TheSoftNode/NodePulse
+- **Issues**: https://github.com/TheSoftNode/NodePulse/issues
 - **Discord**: [Join community](https://discord.gg/nodepulse)

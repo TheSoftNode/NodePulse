@@ -58,7 +58,7 @@ export default function LandingPage() {
               <Link href="#features" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-green-600 dark:hover:text-blue-400 transition-colors">
                 Features
               </Link>
-              <Link href="https://github.com/nodepulse" target="_blank" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-green-600 dark:hover:text-blue-400 transition-colors">
+              <Link href="https://github.com/TheSoftNode/NodePulse" target="_blank" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-green-600 dark:hover:text-blue-400 transition-colors">
                 GitHub
               </Link>
               <Link href="https://docs.nodepulse.io" target="_blank" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-green-600 dark:hover:text-blue-400 transition-colors">
