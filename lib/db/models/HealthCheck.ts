@@ -44,7 +44,6 @@ const HealthCheckSchema = new Schema<IHealthCheckDocument>(
       type: Date,
       required: true,
       default: Date.now,
-      index: true,
     },
     error: String,
   },

@@ -6,10 +6,12 @@ import HealthCheck from '@/lib/db/models/HealthCheck';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { NodeStatusBadge } from '@/components/nodes/node-status-badge';
+import { NodeInsightsPanel } from '@/components/nodes/node-insights-panel';
+import { ManualHealthCheckButton } from '@/components/nodes/manual-health-check-button';
 import { isValidObjectId } from '@/lib/utils/validators';
 import { formatRelativeTime } from '@/lib/utils/date-utils';
 import { formatNetworkName, formatResponseTime } from '@/lib/utils/formatters';
-import { ArrowLeft, Activity, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Activity, Brain } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,29 +45,23 @@ export default async function NodeDetailPage({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
           <Link href="/nodes">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" className="dark:hover:bg-slate-800 flex-shrink-0">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight">{node.name}</h2>
-            <p className="text-muted-foreground mt-1">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 truncate">{node.name}</h2>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
               {formatNetworkName(node.network)} Node
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           <NodeStatusBadge status={node.status} />
-          <form action={`/api/health-check`} method="POST">
-            <input type="hidden" name="nodeId" value={id} />
-            <Button variant="outline" size="sm">
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Check Now
-            </Button>
-          </form>
+          <ManualHealthCheckButton nodeId={id} />
         </div>
       </div>
 
@@ -115,6 +111,15 @@ export default async function NodeDetailPage({
         </Card>
       </div>
 
+      {/* AI-Powered Insights */}
+      <div>
+        <div className="flex items-center gap-2 mb-4">
+          <Brain className="h-5 w-5 text-violet-600 dark:text-cyan-400" />
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">AI-Powered Insights</h3>
+        </div>
+        <NodeInsightsPanel nodeId={id} />
+      </div>
+
       {/* Node Details */}
       <Card>
         <CardHeader>
@@ -123,20 +128,20 @@ export default async function NodeDetailPage({
         <CardContent className="space-y-2">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Endpoint</p>
-              <p className="text-sm font-mono truncate">{node.endpoint}</p>
+              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Endpoint</p>
+              <p className="text-sm font-mono truncate text-slate-900 dark:text-slate-100">{node.endpoint}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Check Interval</p>
-              <p className="text-sm">{node.checkInterval}s</p>
+              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Check Interval</p>
+              <p className="text-sm text-slate-900 dark:text-slate-100">{node.checkInterval}s</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Network</p>
-              <p className="text-sm">{formatNetworkName(node.network)}</p>
+              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Network</p>
+              <p className="text-sm text-slate-900 dark:text-slate-100">{formatNetworkName(node.network)}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Created</p>
-              <p className="text-sm">{formatRelativeTime(node.createdAt)}</p>
+              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Created</p>
+              <p className="text-sm text-slate-900 dark:text-slate-100">{formatRelativeTime(node.createdAt)}</p>
             </div>
           </div>
         </CardContent>
@@ -149,7 +154,7 @@ export default async function NodeDetailPage({
         </CardHeader>
         <CardContent>
           {healthChecks.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">
+            <p className="text-sm text-slate-600 dark:text-slate-400 text-center py-8">
               No health checks yet. Click "Check Now" to run the first check.
             </p>
           ) : (
@@ -157,27 +162,27 @@ export default async function NodeDetailPage({
               {healthChecks.map((check) => (
                 <div
                   key={check._id.toString()}
-                  className="flex items-center justify-between p-3 rounded-lg border"
+                  className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
                 >
                   <div className="flex items-center gap-3">
                     <div
                       className={`h-2 w-2 rounded-full ${
-                        check.status === 'success' ? 'bg-green-500' : 'bg-red-500'
+                        check.status === 'success' ? 'bg-green-500 dark:bg-blue-400' : 'bg-red-500 dark:bg-red-400'
                       }`}
                     />
                     <div>
-                      <p className="text-sm font-medium">
+                      <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
                         {check.status === 'success' ? 'Healthy' : 'Failed'}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-slate-600 dark:text-slate-400">
                         {formatRelativeTime(check.checkedAt)}
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium">{formatResponseTime(check.responseTime)}</p>
+                    <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{formatResponseTime(check.responseTime)}</p>
                     {check.metrics.online !== undefined && (
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-slate-600 dark:text-slate-400">
                         {check.metrics.online ? 'Online' : 'Offline'}
                       </p>
                     )}

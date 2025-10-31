@@ -61,15 +61,15 @@ export default async function DashboardPage() {
         {/* Page Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl">
               Dashboard
             </h1>
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
               Monitor your DePIN infrastructure in real-time
             </p>
           </div>
           <Link href="/nodes/new">
-            <Button className="bg-green-600 hover:bg-green-700 text-white shadow-sm">
+            <Button className="bg-green-600 dark:bg-blue-600 hover:bg-green-700 dark:hover:bg-blue-700 text-white shadow-sm">
               <Plus className="h-4 w-4 mr-2" />
               Add Node
             </Button>
@@ -78,55 +78,55 @@ export default async function DashboardPage() {
 
         {/* Stats Grid */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center justify-between">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100">
-                <Server className="h-6 w-6 text-slate-700" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
+                <Server className="h-6 w-6 text-slate-700 dark:text-slate-300" />
               </div>
-              <span className="text-3xl font-bold text-slate-900">{totalNodes}</span>
+              <span className="text-3xl font-bold text-slate-900 dark:text-slate-100">{totalNodes}</span>
             </div>
             <div className="mt-4">
-              <h3 className="text-sm font-medium text-slate-600">Total Nodes</h3>
-              <p className="mt-1 text-xs text-slate-500">Across all networks</p>
+              <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Total Nodes</h3>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-500">Across all networks</p>
             </div>
           </div>
 
-          <div className="rounded-xl border border-green-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+          <div className="rounded-xl border border-green-200 dark:border-blue-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center justify-between">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100">
-                <CheckCircle2 className="h-6 w-6 text-green-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 dark:bg-blue-950">
+                <CheckCircle2 className="h-6 w-6 text-green-600 dark:text-blue-400" />
               </div>
-              <span className="text-3xl font-bold text-green-600">{healthyNodes}</span>
+              <span className="text-3xl font-bold text-green-600 dark:text-blue-400">{healthyNodes}</span>
             </div>
             <div className="mt-4">
-              <h3 className="text-sm font-medium text-slate-600">Healthy</h3>
-              <p className="mt-1 text-xs text-slate-500">Operating normally</p>
+              <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Healthy</h3>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-500">Operating normally</p>
             </div>
           </div>
 
-          <div className="rounded-xl border border-violet-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+          <div className="rounded-xl border border-violet-200 dark:border-cyan-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center justify-between">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-violet-100">
-                <Activity className="h-6 w-6 text-violet-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-violet-100 dark:bg-cyan-950">
+                <Activity className="h-6 w-6 text-violet-600 dark:text-cyan-400" />
               </div>
-              <span className="text-3xl font-bold text-violet-600">{warningNodes}</span>
+              <span className="text-3xl font-bold text-violet-600 dark:text-cyan-400">{warningNodes}</span>
             </div>
             <div className="mt-4">
-              <h3 className="text-sm font-medium text-slate-600">Warning</h3>
-              <p className="mt-1 text-xs text-slate-500">Needs attention</p>
+              <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Warning</h3>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-500">Needs attention</p>
             </div>
           </div>
 
-          <div className="rounded-xl border border-red-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+          <div className="rounded-xl border border-red-200 dark:border-red-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center justify-between">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-red-100">
-                <AlertTriangle className="h-6 w-6 text-red-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-red-100 dark:bg-red-950">
+                <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
               </div>
-              <span className="text-3xl font-bold text-red-600">{criticalNodes}</span>
+              <span className="text-3xl font-bold text-red-600 dark:text-red-400">{criticalNodes}</span>
             </div>
             <div className="mt-4">
-              <h3 className="text-sm font-medium text-slate-600">Critical</h3>
-              <p className="mt-1 text-xs text-slate-500">Immediate action required</p>
+              <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Critical</h3>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-500">Immediate action required</p>
             </div>
           </div>
         </div>
@@ -135,10 +135,10 @@ export default async function DashboardPage() {
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Nodes Grid - Takes 2 columns */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
               <div className="mb-6">
-                <h2 className="text-xl font-semibold text-slate-900">Your Nodes</h2>
-                <p className="mt-1 text-sm text-slate-600">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Your Nodes</h2>
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                   {totalNodes === 0
                     ? 'Get started by adding your first node'
                     : `Monitoring ${totalNodes} node${totalNodes !== 1 ? 's' : ''}`}
@@ -157,20 +157,20 @@ export default async function DashboardPage() {
 
         {/* Quick Actions Banner */}
         {totalNodes === 0 && (
-          <div className="rounded-xl border-2 border-dashed border-slate-300 bg-white p-8 shadow-sm">
+          <div className="rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 shadow-sm">
             <div className="text-center space-y-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 mx-auto">
-                <Zap className="h-8 w-8 text-green-600 animate-pulse" />
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-blue-950 mx-auto">
+                <Zap className="h-8 w-8 text-green-600 dark:text-blue-400 animate-pulse" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-slate-900">Ready to start monitoring?</h3>
-                <p className="mt-2 text-sm text-slate-600 max-w-md mx-auto">
+                <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Ready to start monitoring?</h3>
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto">
                   Add your first node to begin tracking health, performance, and uptime across your DePIN infrastructure.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
                 <Link href="/nodes/new">
-                  <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white shadow-sm w-full sm:w-auto">
+                  <Button size="lg" className="bg-green-600 dark:bg-blue-600 hover:bg-green-700 dark:hover:bg-blue-700 text-white shadow-sm w-full sm:w-auto">
                     <Plus className="h-4 w-4 mr-2" />
                     Add Your First Node
                   </Button>

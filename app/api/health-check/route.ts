@@ -11,8 +11,18 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
-    const body = await request.json();
-    const { nodeId } = body;
+    // Handle both JSON and form data
+    let nodeId: string;
+    const contentType = request.headers.get('content-type');
+
+    if (contentType?.includes('application/json')) {
+      const body = await request.json();
+      nodeId = body.nodeId;
+    } else {
+      // Handle form data
+      const formData = await request.formData();
+      nodeId = formData.get('nodeId') as string;
+    }
 
     if (!nodeId || !isValidObjectId(nodeId)) {
       return NextResponse.json(

@@ -1,43 +1,48 @@
 'use client';
 
-import { Bell, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { RefreshCw } from 'lucide-react';
+import { NotificationsDropdown } from './notifications-dropdown';
+import { ThemeToggle } from '@/components/theme-toggle';
+
+interface Notification {
+  _id: string;
+  type: string;
+  severity: 'info' | 'warning' | 'critical';
+  message: string;
+  createdAt: Date;
+  nodeId?: string;
+}
 
 interface HeaderProps {
   title?: string;
-  unresolvedAlerts?: number;
+  notifications?: Notification[];
 }
 
-export function Header({ title = 'Dashboard', unresolvedAlerts = 0 }: HeaderProps) {
+export function Header({ title = 'Dashboard', notifications = [] }: HeaderProps) {
   const handleRefresh = () => {
     window.location.reload();
   };
 
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-background px-6">
-      <div>
-        <h1 className="text-2xl font-bold">{title}</h1>
+    <header className="flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 lg:px-8">
+      <div className="ml-12 lg:ml-0">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{title}</h1>
       </div>
 
-      <div className="flex items-center gap-4">
-        {/* Alerts indicator */}
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" />
-          {unresolvedAlerts > 0 && (
-            <Badge
-              variant="destructive"
-              className="absolute -right-1 -top-1 h-5 min-w-5 rounded-full px-1 text-xs"
-            >
-              {unresolvedAlerts}
-            </Badge>
-          )}
-        </Button>
+      <div className="flex items-center gap-3">
+        {/* Notifications dropdown */}
+        <NotificationsDropdown notifications={notifications} />
+
+        {/* Theme toggle */}
+        <ThemeToggle />
 
         {/* Refresh button */}
-        <Button variant="outline" size="icon" onClick={handleRefresh}>
+        <button
+          onClick={handleRefresh}
+          className="rounded-lg border border-slate-300 dark:border-slate-700 p-2 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+        >
           <RefreshCw className="h-4 w-4" />
-        </Button>
+        </button>
       </div>
     </header>
   );
