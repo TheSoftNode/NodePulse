@@ -1,6 +1,8 @@
 import { PageHeader } from '@/components/layout/page-header';
 import { NodeForm } from '@/components/nodes/node-form';
 
+export const dynamic = 'force-dynamic';
+
 export default function NewNodePage() {
   return (
     <div className="space-y-6">

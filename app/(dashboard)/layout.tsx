@@ -3,27 +3,43 @@ import { Header } from '@/components/layout/header';
 import connectDB from '@/lib/db/connection';
 import Alert from '@/lib/db/models/Alert';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  await connectDB();
+  let notifications: Array<{
+    _id: string;
+    type: string;
+    severity: 'info' | 'warning' | 'critical';
+    message: string;
+    createdAt: Date;
+    nodeId: string;
+  }> = [];
 
-  // Fetch recent unresolved alerts for notifications
-  const recentAlerts = await Alert.find({ resolved: false })
-    .sort({ createdAt: -1 })
-    .limit(10)
-    .lean();
+  try {
+    await connectDB();
 
-  const notifications = recentAlerts.map((alert) => ({
-    _id: alert._id.toString(),
-    type: alert.type,
-    severity: alert.severity,
-    message: alert.message,
-    createdAt: new Date(alert.createdAt),
-    nodeId: alert.nodeId.toString(),
-  }));
+    // Fetch recent unresolved alerts for notifications
+    const recentAlerts = await Alert.find({ resolved: false })
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .lean();
+
+    notifications = recentAlerts.map((alert) => ({
+      _id: alert._id.toString(),
+      type: alert.type,
+      severity: alert.severity as 'info' | 'warning' | 'critical',
+      message: alert.message,
+      createdAt: new Date(alert.createdAt),
+      nodeId: alert.nodeId.toString(),
+    }));
+  } catch (error) {
+    console.error('Failed to fetch notifications:', error);
+    // Continue with empty notifications during build
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950">

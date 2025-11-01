@@ -3,6 +3,7 @@
   "description": "AI-powered DePIN operations platform that predicts failures before they happen, optimizes earnings with intelligent recommendations, and benchmarks performance against the network. The only platform that doesn't just monitor—it makes you money.",
   "version": "2.0.0",
   "category": "monitoring",
+  "docker_image": "uchetheo/nodepulse:2.0.0",
   "logo_url": "https://raw.githubusercontent.com/TheSoftNode/NodePulse/main/public/logo.png",
   "documentation_url": "https://github.com/TheSoftNode/NodePulse",
   "repository_url": "https://github.com/TheSoftNode/NodePulse",
